@@ -8,6 +8,7 @@ import {
   midiToFrequency,
   playPluckedNote,
   serializeTabToAscii,
+  parseAsciiToTabTrack,
 } from './core/tab-engine';
 import { FretboardView } from './components/FretboardView';
 import {
@@ -16,6 +17,7 @@ import {
   Plus,
   Copy,
   Printer,
+  FileText,
 } from 'lucide-react';
 
 export const App: React.FC = () => {
@@ -23,6 +25,8 @@ export const App: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [activeColumnIndex, setActiveColumnIndex] = useState<number | null>(null);
   const [asciiModalOpen, setAsciiModalOpen] = useState(false);
+  const [importModalOpen, setImportModalOpen] = useState(false);
+  const [pastedAscii, setPastedAscii] = useState('');
   const [copyFeedback, setCopyFeedback] = useState(false);
 
   const playbackTimerRef = useRef<any>(null);
@@ -102,6 +106,14 @@ export const App: React.FC = () => {
     setTrack({ ...track, measures: [...track.measures, newMeasure] });
   };
 
+  const handleImportAscii = () => {
+    if (!pastedAscii.trim()) return;
+    const parsed = parseAsciiToTabTrack(pastedAscii, track.title, track.bpm);
+    setTrack(parsed);
+    setImportModalOpen(false);
+    setPastedAscii('');
+  };
+
   const handleCopyAscii = () => {
     const ascii = serializeTabToAscii(track);
     navigator.clipboard.writeText(ascii);
@@ -156,12 +168,21 @@ export const App: React.FC = () => {
             )}
           </button>
 
+          {/* ASCII Import */}
+          <button
+            onClick={() => setImportModalOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs text-emerald-400 font-semibold transition"
+            title="Importar Tablatura ASCII colada da web"
+          >
+            <FileText className="w-3.5 h-3.5" /> Colar Tab
+          </button>
+
           {/* ASCII Export */}
           <button
             onClick={() => setAsciiModalOpen(true)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-200 transition"
           >
-            <Copy className="w-3.5 h-3.5" /> ASCII
+            <Copy className="w-3.5 h-3.5" /> Exportar ASCII
           </button>
 
           {/* Print PDF */}
@@ -270,6 +291,54 @@ export const App: React.FC = () => {
                 className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition flex items-center gap-1.5"
               >
                 <Copy className="w-4 h-4" /> {copyFeedback ? 'Copiado!' : 'Copiar Tablatura'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ASCII Tab Import Modal */}
+      {importModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-2xl bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <FileText className="w-5 h-5 text-emerald-400" />
+                <h3 className="font-bold text-base text-white">Importar Tablatura ASCII</h3>
+              </div>
+              <button
+                onClick={() => setImportModalOpen(false)}
+                className="text-zinc-500 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-zinc-400">
+              Cole aqui as 6 linhas de tablatura em texto copiadas de sites como Ultimate-Guitar ou CifraClub:
+            </p>
+
+            <textarea
+              value={pastedAscii}
+              onChange={(e) => setPastedAscii(e.target.value)}
+              placeholder={`e|---------------------------------|\nB|---------------------------------|\nG|---------------------------------|\nD|---0---3---5---0---3---6-5-------|\nA|---0---3---5---0---3---6-5-------|\nE|---------------------------------|`}
+              className="p-4 bg-zinc-950 border border-zinc-800 rounded-2xl font-mono text-xs text-zinc-100 min-h-48 resize-none focus:outline-none focus:border-emerald-500 leading-relaxed"
+              spellCheck={false}
+            />
+
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setImportModalOpen(false)}
+                className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleImportAscii}
+                disabled={!pastedAscii.trim()}
+                className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white font-bold text-xs transition shadow-lg shadow-emerald-600/30"
+              >
+                Converter para Grade Interativa
               </button>
             </div>
           </div>

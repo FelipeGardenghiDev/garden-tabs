@@ -12,9 +12,10 @@ Parte da **Garden Suite** — ferramentas de código aberto de nível Senior/Sta
 - 🎼 **Grade Interativa de Tablatura (6 Cordas)**: Clique e digite casas diretamente na grade com divisão rítmica por compasso.
 - 🔊 **Playback Sintetizado (Web Audio API)**: Escute os riffs compostos em tempo real com controle de BPM e cursor rítmico.
 - 🎸 **Braço de Guitarra Interativo (Fretboard)**: Toque cordas e casas de 0 a 15 para testar digitações e memorizar desenhos de escala.
-- 📋 **Exportador ASCII Nativo**: Copie tablaturas limpas formatadas em texto puro para colar em chats, cifras ou fóruns.
+- 📋 **Importador & Exportador ASCII Nativo**: Cole tablaturas em texto puro (ASCII) de sites como Ultimate-Guitar ou CifraClub para converter instantaneamente na grade interativa; copie em 1 clique com suporte a técnicas (`h`, `p`, `/`, `b`).
 - 🖨️ **Exportação PDF / Impressão**: Layout limpo preparado com `@media print` para imprimir folhas de partitura legíveis.
-- 📱 **PWA & APK Android Nativo**: Empacotado via Capacitor (`@capacitor/android`) para compor riffs no sofá ou no ensaio da banda.
+- 🌐 **Deploy no GitHub Pages**: Executável diretamente pelo navegador em qualquer dispositivo: [https://felipegardenghidev.github.io/garden-tabs/](https://felipegardenghidev.github.io/garden-tabs/)
+- 📱 **Compilação Contínua de APK Android**: A cada commit na branch `main`, o GitHub Actions compila o APK nativo (`garden-tabs-debug-apk`) disponível para download imediato na aba **Actions**.
 
 ---
 
